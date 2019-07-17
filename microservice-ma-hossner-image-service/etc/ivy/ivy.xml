@@ -13,6 +13,8 @@
     <dependency org="junit" name="junit" rev="4.12" conf="platform->*"/>
     <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1" conf="bundle->default"/>
 
-    
+    <dependency org="mysql" name="mysql-connector-java" rev="5.1.6" conf="bundle->default"/>
+    <dependency org="org.apache.commons" name="commons-pool2" rev="2.2" conf="bundle->default"/>
+    <dependency org="org.apache.commons" name="commons-dbcp2" rev="2.0" conf="bundle->default"/>
   </dependencies>
 </ivy-module>

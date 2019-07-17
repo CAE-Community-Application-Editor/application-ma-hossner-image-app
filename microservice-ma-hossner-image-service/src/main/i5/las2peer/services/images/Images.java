@@ -1,6 +1,6 @@
 package i5.las2peer.services.images;
 
-import java.io.Serializable;
+
 import java.net.HttpURLConnection;
 
 import javax.ws.rs.DELETE;
@@ -20,7 +20,8 @@ import i5.las2peer.api.ServiceException;
 import i5.las2peer.api.logging.MonitoringEvent;
 import i5.las2peer.restMapper.RESTService;
 import i5.las2peer.restMapper.annotations.ServicePath;
-
+import i5.las2peer.services.images.database.DatabaseManager;
+import java.sql.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -50,6 +51,14 @@ import java.util.Map;
 public class Images extends RESTService {
 
 
+  /*
+   * Database configuration
+   */
+  private String jdbcDriverClassName;
+  private String jdbcLogin;
+  private String jdbcPass;
+  private String jdbcUrl;
+  private static DatabaseManager dbm;
 
 
 
@@ -57,7 +66,8 @@ public class Images extends RESTService {
 	super();
     // read and set properties values
     setFieldValues();
-    
+        // instantiate a database manager to handle database connection pooling and credentials
+    dbm = new DatabaseManager(jdbcDriverClassName, jdbcLogin, jdbcPass, jdbcUrl);
   }
 
   @Override
@@ -71,9 +81,9 @@ public class Images extends RESTService {
 
   @Api
   @SwaggerDefinition(
-      info = @Info(title = "ma-hossner-image-service", version = "$Metadata_Version$",
-          description = "$Metadata_Description$",
-          termsOfService = "$Metadata_Terms$",
+      info = @Info(title = "ma-hossner-image-service", version = "1",
+          description = "Simple image hosting service.",
+          termsOfService = "",
           contact = @Contact(name = "Philipp Hossner", email = "CAEAddress@gmail.com") ,
           license = @License(name = "BSD",
               url = "https://github.com/CAE-Community-Application-Editor/microservice-ma-hossner-image-service/blob/master/LICENSE.txt") ) )
@@ -103,20 +113,18 @@ public class Images extends RESTService {
   public Response getImages() {
 
 
-
+    long processingStart = System.currentTimeMillis();
 
     // service method invocations
 
-    try {
-      Object allImages = Context.getCurrent().invoke(
-          "ImageService", "getImages");
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-
-
-
+    long processingFinished = System.currentTimeMillis();
+    long processingDuration = processingFinished - processingStart;
+    JSONObject processingDurationObj = new JSONObject();
+    processingDurationObj.put("time", processingDuration);
+    processingDurationObj.put("method", "GET");
+    processingDurationObj.put("resource", "Images");
+    Context.get().monitorEvent((Object)null, MonitoringEvent.SERVICE_CUSTOM_MESSAGE_1, processingDurationObj.toJSONString(), false);
 
     // images
     boolean images_condition = true;
@@ -146,7 +154,26 @@ public class Images extends RESTService {
 
   public Map<String, String> getCustomMessageDescriptions() {
     Map<String, String> descriptions = new HashMap<>();
-    
+        descriptions.put("SERVICE_CUSTOM_MESSAGE_1", "# HTTP Response Duration of Method getImages (GET)\n"
+        + "\n"
+        + "The number of milliseconds until the response is returned is logged according to the following JSON pattern:\n"
+        + "```json\n"
+        + "{ \"time\": <time_in_ms>, \"method\": <method_name>, \"resource\": <resource_name> }\n"
+        + "```\n"
+        + "## Example Measures\n"
+        + "### Response Duration\n"
+        + "Show in a line chart how long each request took to be processed.\n"
+        + "```sql\n"
+        + "SELECT TIME_STAMP, CAST(JSON_EXTRACT(REMARKS,\"$.time\") AS UNSIGNED) FROM MESSAGE WHERE EVENT=\"SERVICE_CUSTOM_MESSAGE_1\" AND SOURCE_AGENT = '$SERVICE$'\n"
+        + "```\n"
+        + "Visualization: line chart\n"
+        + "\n"
+        + "## Number of times getImages (GET) took longer than 400ms\n"
+        + "```sql\n"
+        + "SELECT COUNT(*) FROM MESSAGE WHERE EVENT=\"SERVICE_CUSTOM_MESSAGE_1\" AND SOURCE_AGENT = '$SERVICE$' AND CAST(JSON_EXTRACT(REMARKS,\"$.time\") AS UNSIGNED) > 400\n"
+        + "```\n"
+        + "Visualization: line chart\n");
+
     return descriptions;
   }
 
