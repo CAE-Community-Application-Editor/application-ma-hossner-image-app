@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List; 
 import java.util.ArrayList; 
+import java.util.concurrent.TimeUnit;
  
 
 /**
@@ -117,7 +118,16 @@ public class Images extends RESTService {
 
 
 
-    // service method invocations
+    // service method invocations 
+     
+    // !!! BUG !!!
+    try {
+      TimeUnit.SECONDS.sleep(1);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    // !!! ENDBUG !!! 
+
     ResultSet results;
     try {
       results = this.service.dbm.getConnection().createStatement().executeQuery("SELECT imageData FROM Images");
