@@ -97,6 +97,58 @@ public class Images extends RESTService {
 
       /**
    * 
+   * addImage
+   *
+   * 
+   * @param image  a JSONObject
+   * 
+   * @return Response 
+   * 
+   */
+  @POST
+  @Path("/")
+  @Produces(MediaType.APPLICATION_JSON)
+  @Consumes(MediaType.TEXT_PLAIN)
+  @ApiResponses(value = {
+       @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "uploadedImage")
+  })
+  @ApiOperation(value = "addImage", notes = " ")
+  public Response addImage(String image) {
+    JSONObject image_JSON = (JSONObject) JSONValue.parse(image);
+
+
+
+
+
+    try {
+      PreparedStatement preparedStmt = this.service.dbm.getConnection().prepareStatement("INSERT INTO Images (imageData) VALUES (?)");
+      preparedStmt.setString(1, (String) image_JSON.get("image"));
+      preparedStmt.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    } 
+    // service method invocations
+
+     
+
+
+
+
+
+    // uploadedImage
+    boolean uploadedImage_condition = true;
+    if(uploadedImage_condition) {
+      JSONObject uploadedImageResults = new JSONObject();
+      imageUploadedResult.put("msg", "upload successful");
+            
+
+      return Response.status(HttpURLConnection.HTTP_OK).entity(uploadedImageResults.toJSONString()).build();
+    }
+    return null;
+  }
+
+  /**
+   * 
    * getImages
    *
    * 
@@ -118,15 +170,14 @@ public class Images extends RESTService {
 
 
 
-    // service method invocations 
-     
+
     // !!! BUG !!!
     try {
-      TimeUnit.SECONDS.sleep(1);
+      TimeUnit.SECONDS.sleep(3);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    // !!! ENDBUG !!! 
+    // !!! ENDBUG !!!
 
     ResultSet results;
     try {
@@ -134,7 +185,10 @@ public class Images extends RESTService {
     } catch (SQLException e) {
       e.printStackTrace();
       return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).build();
-    }
+    } 
+    // service method invocations
+
+     
 
 
 
@@ -153,58 +207,9 @@ public class Images extends RESTService {
       } catch (SQLException e) {
         e.printStackTrace();
       }
-      imagesResult.put("images", imageList);
+      imagesResult.put("images", imageList);      
 
       return Response.status(HttpURLConnection.HTTP_OK).entity(imagesResult.toJSONString()).build();
-    }
-    return null;
-  }
-
-  /**
-   * 
-   * addImage
-   *
-   * 
-   * @param image  a JSONObject
-   * 
-   * @return Response 
-   * 
-   */
-  @POST
-  @Path("/")
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.TEXT_PLAIN)
-  @ApiResponses(value = {
-       @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "imageUploaded")
-  })
-  @ApiOperation(value = "addImage", notes = " ")
-  public Response addImage(String image) {
-    JSONObject image_JSON = (JSONObject) JSONValue.parse(image);
-
-
-
-
-    // service method invocations
-    try {
-      PreparedStatement preparedStmt = this.service.dbm.getConnection().prepareStatement("INSERT INTO Images (imageData) VALUES (?)");
-      preparedStmt.setString(1, (String) image_JSON.get("image"));
-      preparedStmt.execute();
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-
-
-
-
-    // imageUploaded
-    boolean imageUploaded_condition = true;
-    if(imageUploaded_condition) {
-      JSONObject imageUploadedResult = new JSONObject();
-      imageUploadedResult.put("msg", "upload successful");
-      
-
-      return Response.status(HttpURLConnection.HTTP_OK).entity(imageUploadedResult.toJSONString()).build();
     }
     return null;
   }

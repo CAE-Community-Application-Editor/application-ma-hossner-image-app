@@ -92,28 +92,6 @@ public class ImagesTest {
 
   /**
    * 
-   * Test for the getImages method.
-   * 
-   */
-  @Test
-  public void testgetImages() {
-    MiniClient c = new MiniClient();
-    c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
-    try {
-
-      c.setLogin(testAgent.getIdentifier(), testPass);
-      ClientResponse result = c.sendRequest("GET", mainPath + "/", "",
-        MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, new HashMap<String,String>());
-      assertTrue(true); // change here
-      System.out.println("Result of 'testgetImages': " + result.getResponse().trim());
-    } catch (Exception e) {
-      e.printStackTrace();
-      fail("Exception: " + e);
-    }
-  }
-
-  /**
-   * 
    * Test for the addImage method.
    * 
    */
@@ -128,6 +106,28 @@ public class ImagesTest {
         MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, new HashMap<String,String>());
       assertTrue(true); // change here
       System.out.println("Result of 'testaddImage': " + result.getResponse().trim());
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Exception: " + e);
+    }
+  }
+
+  /**
+   * 
+   * Test for the getImages method.
+   * 
+   */
+  @Test
+  public void testgetImages() {
+    MiniClient c = new MiniClient();
+    c.setAddressPort(HTTP_ADDRESS, HTTP_PORT);
+    try {
+
+      c.setLogin(testAgent.getIdentifier(), testPass);
+      ClientResponse result = c.sendRequest("GET", mainPath + "/", "",
+        MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON, new HashMap<String,String>());
+      assertTrue(true); // change here
+      System.out.println("Result of 'testgetImages': " + result.getResponse().trim());
     } catch (Exception e) {
       e.printStackTrace();
       fail("Exception: " + e);
