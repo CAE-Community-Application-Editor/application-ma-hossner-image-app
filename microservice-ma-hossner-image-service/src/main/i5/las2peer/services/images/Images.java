@@ -81,7 +81,7 @@ public class Images extends RESTService {
 
   @Api
   @SwaggerDefinition(
-      info = @Info(title = "ma-hossner-image-service", version = "2",
+      info = @Info(title = "ma-hossner-image-service", version = "3",
           description = "Simple image hosting service.",
           termsOfService = "",
           contact = @Contact(name = "Philipp Hossner", email = "CAEAddress@gmail.com") ,
