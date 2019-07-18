@@ -34,7 +34,8 @@ import org.json.simple.*;
 
 import java.util.HashMap;
 import java.util.Map;
- 
+import java.util.List; 
+import java.util.ArrayList; 
 
 /**
  *
@@ -113,25 +114,35 @@ public class Images extends RESTService {
   public Response getImages() {
 
 
-    long processingStart = System.currentTimeMillis();
+
 
     // service method invocations
+    ResultSet results;
+    try {
+      results = this.service.dbm.getConnection().createStatement().executeQuery("SELECT imageData FROM Images");
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return Response.status(HttpURLConnection.HTTP_INTERNAL_ERROR).build();
+    }
 
 
-    long processingFinished = System.currentTimeMillis();
-    long processingDuration = processingFinished - processingStart;
-    JSONObject processingDurationObj = new JSONObject();
-    processingDurationObj.put("time", processingDuration);
-    processingDurationObj.put("method", "GET");
-    processingDurationObj.put("resource", "Images");
-    Context.get().monitorEvent((Object)null, MonitoringEvent.SERVICE_CUSTOM_MESSAGE_1, processingDurationObj.toJSONString(), false);
+
+
 
     // images
     boolean images_condition = true;
     if(images_condition) {
       JSONObject imagesResult = new JSONObject();
 
-      
+      List<String> imageList = new ArrayList<>();
+      try {
+        while (results.next()) {
+          imageList.add(results.getString(0));
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      imagesResult.put("images", imageList);
 
       return Response.status(HttpURLConnection.HTTP_OK).entity(imagesResult.toJSONString()).build();
     }
@@ -197,26 +208,7 @@ public class Images extends RESTService {
 
   public Map<String, String> getCustomMessageDescriptions() {
     Map<String, String> descriptions = new HashMap<>();
-        descriptions.put("SERVICE_CUSTOM_MESSAGE_1", "# HTTP Response Duration of Method getImages (GET)\n"
-        + "\n"
-        + "The number of milliseconds until the response is returned is logged according to the following JSON pattern:\n"
-        + "```json\n"
-        + "{ \"time\": <time_in_ms>, \"method\": <method_name>, \"resource\": <resource_name> }\n"
-        + "```\n"
-        + "## Example Measures\n"
-        + "### Response Duration\n"
-        + "Show in a line chart how long each request took to be processed.\n"
-        + "```sql\n"
-        + "SELECT TIME_STAMP, CAST(JSON_EXTRACT(REMARKS,\"$.time\") AS UNSIGNED) FROM MESSAGE WHERE EVENT=\"SERVICE_CUSTOM_MESSAGE_1\" AND SOURCE_AGENT = '$SERVICE$'\n"
-        + "```\n"
-        + "Visualization: line chart\n"
-        + "\n"
-        + "## Number of times getImages (GET) took longer than 400ms\n"
-        + "```sql\n"
-        + "SELECT COUNT(*) FROM MESSAGE WHERE EVENT=\"SERVICE_CUSTOM_MESSAGE_1\" AND SOURCE_AGENT = '$SERVICE$' AND CAST(JSON_EXTRACT(REMARKS,\"$.time\") AS UNSIGNED) > 400\n"
-        + "```\n"
-        + "Visualization: line chart\n");
-
+    
     return descriptions;
   }
 
