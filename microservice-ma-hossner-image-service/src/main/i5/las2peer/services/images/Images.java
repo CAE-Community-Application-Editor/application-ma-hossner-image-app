@@ -138,7 +138,7 @@ public class Images extends RESTService {
       List<String> imageList = new ArrayList<>();
       try {
         while (results.next()) {
-          imageList.add(results.getString(0));
+          imageList.add(results.getString(1));
         }
       } catch (SQLException e) {
         e.printStackTrace();
@@ -177,7 +177,7 @@ public class Images extends RESTService {
     // service method invocations
     try {
       PreparedStatement preparedStmt = this.service.dbm.getConnection().prepareStatement("INSERT INTO Images (imageData) VALUES (?)");
-      preparedStmt.setString(0, (String) image_JSON.get("image"));
+      preparedStmt.setString(1, (String) image_JSON.get("image"));
       preparedStmt.execute();
     } catch (SQLException e) {
       e.printStackTrace();
