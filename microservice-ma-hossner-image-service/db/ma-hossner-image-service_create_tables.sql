@@ -7,8 +7,8 @@
 -- Table structure for table Images.
 --
 CREATE TABLE caeschema.Images (
-  imageData TEXT ,
   id INT ,
+  imageData TEXT ,
 CONSTRAINT id_PK PRIMARY KEY (id)
  
 );
