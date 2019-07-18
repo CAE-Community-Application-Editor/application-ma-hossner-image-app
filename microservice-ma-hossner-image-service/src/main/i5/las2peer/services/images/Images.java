@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List; 
 import java.util.ArrayList; 
+ 
 
 /**
  *
@@ -174,7 +175,13 @@ public class Images extends RESTService {
 
 
     // service method invocations
-
+    try {
+      PreparedStatement preparedStmt = this.service.dbm.getConnection().prepareStatement("INSERT INTO Images (imageData) VALUES (?)");
+      preparedStmt.setString(1,image);
+      preparedStmt.execute();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
 
 
 
@@ -184,7 +191,7 @@ public class Images extends RESTService {
     boolean imageUploaded_condition = true;
     if(imageUploaded_condition) {
       JSONObject imageUploadedResult = new JSONObject();
-
+      imageUploadedResult.put("msg", "upload successful");
       
 
       return Response.status(HttpURLConnection.HTTP_OK).entity(imageUploadedResult.toJSONString()).build();
