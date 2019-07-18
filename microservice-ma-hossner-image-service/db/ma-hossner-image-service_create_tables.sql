@@ -8,7 +8,7 @@
 --
 CREATE TABLE caeschema.Images (
   id INT NOT NULL AUTO_INCREMENT,
-  imageData TEXT ,
+  imageData LONGTEXT ,
 CONSTRAINT id_PK PRIMARY KEY (id)
  
 );
