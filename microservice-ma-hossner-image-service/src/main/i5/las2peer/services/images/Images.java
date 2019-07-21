@@ -171,13 +171,7 @@ public class Images extends RESTService {
 
     long processingStart = System.currentTimeMillis();
 
-    // !!! BUG !!!
-    try {
-      TimeUnit.SECONDS.sleep(3);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-    // !!! ENDBUG !!! 
+    
 
     ResultSet results;
     try {
